@@ -1,0 +1,456 @@
+{
+  "total_actions": 50,
+  "levels_completed": 0,
+  "action_history": [
+    {
+      "action": "ACTION1",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION2",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION1",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION1",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION2",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION2",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION4",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    },
+    {
+      "action": "ACTION3",
+      "result": {
+        "levels_completed": 0,
+        "level_complete": false,
+        "game_over": false,
+        "won": false
+      }
+    }
+  ]
+}

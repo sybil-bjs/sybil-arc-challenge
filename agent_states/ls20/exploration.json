@@ -1,0 +1,452 @@
+{
+  "game_id": "ls20",
+  "mechanics": [
+    {
+      "type": "movement",
+      "description": "ACTION3 causes movement of colors [3, 12]",
+      "confidence": 0.95,
+      "evidence_count": 12
+    },
+    {
+      "type": "movement",
+      "description": "ACTION4 causes movement of colors [3, 12]",
+      "confidence": 0.95,
+      "evidence_count": 9
+    }
+  ],
+  "action_effects": {
+    "ACTION1": [
+      {
+        "action": "ACTION1",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION1",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION1",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      }
+    ],
+    "ACTION2": [
+      {
+        "action": "ACTION2",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION2",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION2",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      }
+    ],
+    "ACTION3": [
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 2,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION3",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      }
+    ],
+    "ACTION4": [
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 52,
+        "movement": [
+          3,
+          12
+        ],
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 2,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      },
+      {
+        "action": "ACTION4",
+        "changed": true,
+        "changed_pixels": 2,
+        "movement": null,
+        "result": {
+          "levels_completed": 0,
+          "level_complete": false,
+          "game_over": false,
+          "won": false
+        }
+      }
+    ]
+  },
+  "total_actions": 30,
+  "exploration_complete": true
+}
