@@ -1,0 +1,47 @@
+[
+  {
+    "task_id": "00dbd492",
+    "model": "sonnet",
+    "input_tokens": 50600,
+    "output_tokens": 1500,
+    "cost_usd": 0.1743,
+    "runtime_sec": 16.0,
+    "timestamp": "2026-02-25T13:47:47.737242"
+  },
+  {
+    "task_id": "4a21e3da",
+    "model": "sonnet",
+    "input_tokens": 537900,
+    "output_tokens": 15400,
+    "cost_usd": 1.8447,
+    "runtime_sec": 118.0,
+    "timestamp": "2026-02-25T13:47:47.774396"
+  },
+  {
+    "task_id": "4a21e3da",
+    "model": "opus",
+    "input_tokens": 30000,
+    "output_tokens": 5000,
+    "cost_usd": 0.825,
+    "runtime_sec": 60.0,
+    "timestamp": "2026-02-25T13:49:25.264323"
+  },
+  {
+    "task_id": "f560132c",
+    "model": "opus",
+    "input_tokens": 20000,
+    "output_tokens": 3000,
+    "cost_usd": 0.525,
+    "runtime_sec": 30.0,
+    "timestamp": "2026-02-25T13:49:25.300182"
+  },
+  {
+    "task_id": "f560132c",
+    "model": "sonnet",
+    "input_tokens": 813000,
+    "output_tokens": 39900,
+    "cost_usd": 3.0375,
+    "runtime_sec": 273.0,
+    "timestamp": "2026-02-25T13:51:53.931735"
+  }
+]
