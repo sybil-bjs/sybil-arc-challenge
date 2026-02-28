@@ -109,3 +109,68 @@ This is **constraint-based reasoning:**
 ---
 
 *Human knowledge continues to accumulate. Each level teaches more.*
+
+---
+
+## Level 3+ Mechanics: Path Planning & State Preservation
+
+### Plus Button is Single-Use
+> "I cannot step over that X button again or I'll change my state into a state I can't use"
+
+**Key constraint:** Once transformed, avoid re-triggering the plus button
+- Plan route carefully
+- Don't backtrack over action points
+
+### Efficient Pathing
+- Yellow pickups should be collected on the way, not detoured to
+- Minimize total moves (life bar constraint)
+- Plan: pickups → plus → target (without crossing plus again)
+
+---
+
+## Level 4+ Mechanics: Shape AND Color
+
+### Two-Step Transformation
+
+**Observation:** Plus button gives right SHAPE but wrong COLOR
+
+**New Element: Rainbow Block**
+> "Something that's rainbow colored generally tells me it might be a color changer"
+
+- Rainbow = multiple colors = color transformation
+- Human intuition: rainbow symbolizes color variety/change
+
+### Full Process for Later Levels
+
+```
+1. Assess: Do I have enough moves?
+2. Collect: Yellow pickups if needed
+3. Shape: Go to plus button (get correct shape)
+4. Color: Go to rainbow block (get correct color)  
+5. Combine: Bring transformed box to target
+6. WIN
+```
+
+### Element Summary (Complete)
+
+| Element | Visual | Function |
+|---------|--------|----------|
+| Life bar | Yellow bar (bottom) | Move budget |
+| Pickups | Yellow boxes | +moves |
+| Plus button | + symbol | Shape transformation (single-use!) |
+| Rainbow block | Rainbow colors | Color transformation |
+| Target | Patterned box | Match shape+color, then combine |
+
+---
+
+## Meta-Insight: Progressive Complexity
+
+The game teaches mechanics progressively:
+- Level 1: Basic movement + transformation
+- Level 2: Resource management (pickups)  
+- Level 3: Path planning (avoid re-triggers)
+- Level 4: Multi-step transformation (shape + color)
+
+**Human learning pattern:** Each level adds ONE new concept. Build on prior knowledge.
+
+*This mirrors how humans learn — scaffolded complexity.*
