@@ -1,0 +1,61 @@
+# Transformation Point Mechanic
+# First discovered in: ls20 (2026-02-28)
+# Documented by: Bridget 🎮 + Saber ⚔️
+
+name: transformation_point
+description: |
+  An element that changes the player's state when interacted with.
+  Usually transforms shape, color, or both to match a goal pattern.
+
+first_seen: ls20
+confidence: high
+documented_by: [bridget, saber]
+
+detection:
+  visual:
+    - type: rare_color_cluster
+      threshold: "< 1% of pixels"
+    - type: small_size
+      cells: "2-10"
+    - type: distinct_shape
+      examples: [cross, plus_sign, circle]
+    - type: high_contrast
+      note: "Often white or bright against dark background"
+  
+  behavioral:
+    - condition: disappears_on_touch
+      note: "Single-use variant"
+    - condition: causes_state_indicator_change
+      required: true
+    - condition: does_not_move
+      note: "Static position"
+
+interaction:
+  trigger: overlap  # Player moves onto it
+  effect: state_transformation
+  consumable: true  # In ls20, plus sign is single-use
+  multi_use_variant: false  # Some games may have respawning version
+
+examples:
+  - game: ls20
+    appearance: "White cross/plus sign"
+    pixel_value: 1
+    cell_count: 2
+    behavior: |
+      - Player touches plus sign
+      - Plus sign disappears (consumed)
+      - State indicator in HUD changes
+      - May need multiple plus signs for full transformation
+
+human_intuition: |
+  "As a human, I realized that plus signs usually mean 
+  you're going to do something." — Bridget
+  
+  Plus signs are universal UI elements for "action" or "add".
+  This transfers from real-world knowledge.
+
+strategy_implications:
+  - Must visit transformation point BEFORE goal (usually)
+  - Check if state already matches goal (skip if yes)
+  - Plan path: start → transform → goal
+  - Don't backtrack over consumed transformation points

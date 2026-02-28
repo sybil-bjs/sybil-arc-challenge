@@ -12,6 +12,8 @@ Bridget's insight: "For each game these things are going to be different,
 so there has to be a time in the beginning when you first create the
 mental model — that's when you assign colors to features."
 
+"As we try more games the list of discovery items will grow."
+
 Saber ⚔️ | Bridget 🎮 | Sybil 🔬
 2026-02-28
 """
@@ -24,6 +26,13 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(__file__))
+
+# Import mechanics registry for meta-learning
+try:
+    from mechanics_registry import MechanicsRegistry
+    HAS_REGISTRY = True
+except ImportError:
+    HAS_REGISTRY = False
 
 try:
     import arc_agi
@@ -60,6 +69,9 @@ class GameSemantics:
     goal_pattern: Optional[np.ndarray] = None
     state_matches_goal: bool = False
     
+    # Detected mechanics (from registry)
+    detected_mechanics: List[str] = field(default_factory=list)
+    
     # Confidence
     discovery_complete: bool = False
     actions_used: int = 0
@@ -70,9 +82,12 @@ class SemanticDiscovery:
     Discovers game semantics through careful probing.
     
     Strategy:
-    1. Analyze initial frame (static analysis)
-    2. Take a few exploratory actions (dynamic analysis)
-    3. Build complete GameSemantics model
+    1. Load mechanics registry (what to look for)
+    2. Analyze initial frame (static analysis)
+    3. Take a few exploratory actions (dynamic analysis)
+    4. Build complete GameSemantics model
+    
+    The registry grows as we encounter new games!
     """
     
     def __init__(self, max_discovery_actions: int = 15):
@@ -80,6 +95,15 @@ class SemanticDiscovery:
         self.frames_seen: List[np.ndarray] = []
         self.actions_taken: List[int] = []
         self.semantics = GameSemantics()
+        
+        # Load mechanics registry for meta-learning
+        self.registry = None
+        self.detection_checklist = []
+        if HAS_REGISTRY:
+            self.registry = MechanicsRegistry()
+            if self.registry.load():
+                self.detection_checklist = self.registry.get_detection_checklist()
+                print(f"  📚 Loaded {len(self.detection_checklist)} detection rules from registry")
     
     def analyze_initial_frame(self, frame: np.ndarray) -> Dict:
         """
@@ -267,6 +291,48 @@ class SemanticDiscovery:
         
         return probe_result
     
+    def _detect_mechanics_from_registry(self, static_results: Dict):
+        """
+        Check for known mechanics based on what we found.
+        
+        Uses detection rules from the mechanics registry.
+        """
+        if not self.registry:
+            return
+        
+        detected = []
+        
+        # Check for state_indicator (bottom-left HUD region)
+        if self.semantics.state_indicator_region != (0, 0, 0, 0):
+            detected.append('state_indicator')
+        
+        # Check for goal_pattern (bordered region found)
+        if self.semantics.goal_position != (0, 0):
+            detected.append('goal_pattern')
+        
+        # Check for transformation_point (rare color clusters = special elements)
+        if len(self.semantics.special_colors) > 0:
+            detected.append('transformation_point')
+        
+        # Check for move_budget (HUD region detected)
+        if static_results.get('hud_detected'):
+            detected.append('move_budget')
+        
+        # Check for resource_pickup (multiple rare clusters of same color)
+        rare_clusters = static_results.get('rare_clusters', [])
+        color_counts = {}
+        for cluster in rare_clusters:
+            color = cluster['color']
+            color_counts[color] = color_counts.get(color, 0) + 1
+        
+        if any(count > 1 for count in color_counts.values()):
+            detected.append('resource_pickup')
+        
+        self.semantics.detected_mechanics = detected
+        
+        if detected:
+            print(f"\n✅ Detected mechanics: {', '.join(detected)}")
+    
     def discover(self, game) -> GameSemantics:
         """
         Full discovery process for a new game.
@@ -278,6 +344,15 @@ class SemanticDiscovery:
         """
         print("\n🔍 SEMANTIC DISCOVERY PHASE")
         print("=" * 40)
+        
+        # 0. Show what we're looking for (from registry)
+        if self.detection_checklist:
+            print("\n📚 Probing for known mechanics:")
+            shown = set()
+            for item in self.detection_checklist:
+                if item['mechanic'] not in shown:
+                    print(f"   - {item['mechanic']}")
+                    shown.add(item['mechanic'])
         
         # Get initial frame
         initial_frame = game.get_frame()
@@ -334,6 +409,9 @@ class SemanticDiscovery:
                         print(f"\n🎯 State vs Goal match: {match_ratio*100:.1f}% "
                               f"({'MATCH!' if self.semantics.state_matches_goal else 'need transformation'})")
         
+        # 5. Detect which mechanics are present (from registry)
+        self._detect_mechanics_from_registry(static_results)
+        
         # Mark discovery complete
         self.semantics.discovery_complete = True
         
@@ -346,6 +424,8 @@ class SemanticDiscovery:
         print(f"   Cells/action: {self.semantics.cells_per_action}")
         print(f"   State matches goal: {self.semantics.state_matches_goal}")
         print(f"   Actions used: {self.semantics.actions_used}")
+        if self.semantics.detected_mechanics:
+            print(f"   Mechanics found: {', '.join(self.semantics.detected_mechanics)}")
         print("=" * 40 + "\n")
         
         return self.semantics

@@ -1,0 +1,59 @@
+# Goal Pattern Mechanic
+# First discovered in: ls20 (2026-02-28)
+# Documented by: Bridget 🎮 + Saber ⚔️
+
+name: goal_pattern
+description: |
+  A target location/pattern that the player must match and overlap
+  to complete the level.
+
+first_seen: ls20
+confidence: high
+documented_by: [bridget, saber]
+
+detection:
+  visual:
+    - type: bordered_region
+      border_color: "Often black (value 0)"
+      note: "Distinct rectangular border"
+    - type: pattern_content
+      note: "Contains shape/color pattern inside"
+    - type: static_position
+      note: "Does not move"
+    - type: prominent_placement
+      note: "Usually visible, not hidden"
+  
+  behavioral:
+    - condition: does_not_change
+      note: "Goal pattern is constant"
+    - condition: completion_trigger
+      when: "player overlaps AND state matches"
+
+interaction:
+  trigger: overlap (after state match)
+  effect: level_complete
+  requirements:
+    - state_indicator must match goal_pattern
+    - player must physically overlap goal position
+
+examples:
+  - game: ls20
+    appearance: "Blue L-shape pattern in black-bordered box"
+    description: "Place to put your final token"
+    behavior: |
+      - Goal pattern shows target shape/color
+      - Player state indicator must match it
+      - When matching, overlap goal → green flash → level complete
+
+human_intuition: |
+  "Goal, place to put your final token" — Bridget's annotation
+  
+  Bordered regions signal "important interactive element".
+  Pattern inside = what you need to become/match.
+
+strategy_implications:
+  - Locate goal early (static, easy to find)
+  - Extract goal pattern for comparison
+  - Plan path that ends at goal position
+  - Verify state matches BEFORE approaching goal
+  - Don't waste moves going to goal before ready

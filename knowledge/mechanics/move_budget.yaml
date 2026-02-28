@@ -1,0 +1,60 @@
+# Move Budget Mechanic
+# First discovered in: ls20 (2026-02-28)
+# Documented by: Bridget 🎮 + Saber ⚔️
+
+name: move_budget
+description: |
+  A limited resource that decreases with each action.
+  Run out = failure. Creates urgency and requires efficient pathing.
+
+first_seen: ls20
+confidence: high
+documented_by: [bridget, saber]
+
+detection:
+  visual:
+    - type: horizontal_bar
+      location: "Usually bottom of screen"
+      note: "Classic video game life/energy bar"
+    - type: color_gradient
+      note: "Often yellow (safe) to red (danger)"
+    - type: dynamic_length
+      note: "Shrinks with each action"
+  
+  behavioral:
+    - condition: decreases_on_action
+      required: true
+    - condition: level_fails_when_empty
+      required: true
+    - condition: can_be_refilled
+      via: resource_pickup
+
+interaction:
+  trigger: passive (every action costs)
+  effect: resource_consumption
+  refill: resource_pickup items
+
+examples:
+  - game: ls20
+    appearance: "Yellow bar with red section at end"
+    location: "Bottom of screen"
+    behavior: |
+      - Each move decreases bar length
+      - Yellow = safe, red = danger zone
+      - When depleted = level fails
+      - Yellow pickups restore budget
+
+human_intuition: |
+  "This little yellow bar with the little red things looks 
+  to me a lot like a video game bar, the amount of life 
+  I have left." — Bridget
+  
+  Universal UI pattern: horizontal bar = resource level.
+  Color coding: yellow/green = good, red = bad.
+
+strategy_implications:
+  - Count available moves before planning
+  - If path needs more moves than budget → find pickups
+  - Optimize for shortest path, not exploration
+  - Don't backtrack unnecessarily
+  - "Budget moves, don't explore wastefully"

@@ -1,0 +1,64 @@
+# State Indicator Mechanic
+# First discovered in: ls20 (2026-02-28)
+# Documented by: Bridget 🎮 + Saber ⚔️
+
+name: state_indicator
+description: |
+  A HUD element that shows the player's current "state" or form.
+  Must match the goal pattern to win.
+
+first_seen: ls20
+confidence: high
+documented_by: [bridget, saber]
+
+detection:
+  visual:
+    - type: fixed_position
+      location: "Usually bottom-left corner"
+      typical_region: [0, 0.85, 0.2, 1.0]  # x1, y1, x2, y2 as ratios
+    - type: bordered_region
+      note: "Often in a dark box"
+    - type: pattern_content
+      note: "Contains shape/color pattern"
+  
+  behavioral:
+    - condition: changes_on_transformation
+      required: true
+    - condition: does_not_move
+      note: "Fixed HUD position"
+    - condition: reflects_player_state
+
+interaction:
+  trigger: passive  # Just displays state
+  effect: none  # Informational only
+  player_interacts: false
+
+win_condition:
+  - state_indicator pattern MATCHES goal pattern
+  - THEN player overlaps goal position
+  - EQUALS level complete
+
+examples:
+  - game: ls20
+    appearance: "Blue L-shape pattern in dark box"
+    location: "Bottom-left corner"
+    pixel_region: [2, 52, 14, 62]  # Approximate
+    behavior: |
+      - Shows current player form
+      - Changes when player touches transformation point
+      - Must match goal pattern to complete level
+
+human_intuition: |
+  "When I see two things that match, as a human I want 
+  to put them together." — Bridget
+  
+  The state indicator is "what I am now".
+  The goal pattern is "what I need to become".
+  Pattern matching = completion signal.
+
+strategy_implications:
+  - Extract state pattern at start
+  - Compare to goal pattern
+  - If match → skip transformation, go to goal
+  - If no match → find transformation point first
+  - Re-check after each transformation

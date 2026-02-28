@@ -1,0 +1,59 @@
+# Resource Pickup Mechanic
+# First discovered in: ls20 Level 2+ (2026-02-28)
+# Documented by: Bridget 🎮 + Saber ⚔️
+
+name: resource_pickup
+description: |
+  Collectible items that replenish a limited resource (moves, lives, etc.).
+  Often color-coded to match the resource bar they refill.
+
+first_seen: ls20
+confidence: high
+documented_by: [bridget, saber]
+
+detection:
+  visual:
+    - type: color_match
+      note: "Same color family as resource bar"
+    - type: small_size
+      cells: "4-16"
+    - type: distinct_border
+      note: "Often has dark center or outline"
+    - type: scattered_placement
+      note: "Multiple instances across map"
+  
+  behavioral:
+    - condition: disappears_on_touch
+      required: true
+    - condition: resource_bar_increases
+      required: true
+    - condition: does_not_block_movement
+
+interaction:
+  trigger: overlap
+  effect: resource_increase
+  consumable: true
+  respawns: false
+
+examples:
+  - game: ls20
+    appearance: "Yellow box with black center"
+    resource_affected: move_budget (yellow bar)
+    behavior: |
+      - Player touches pickup
+      - Pickup disappears
+      - Yellow bar (move budget) increases
+
+human_intuition: |
+  "When I try completing without extra life, I realize I don't 
+  have enough. So there MUST be another resource given to me."
+  — Bridget
+  
+  Color matching: Yellow boxes → yellow life bar = related.
+  Game design logic: Puzzle must be solvable → resources exist.
+
+strategy_implications:
+  - Collect pickups BEFORE running out of moves
+  - Plan route to include pickups on the way
+  - If path seems impossible, look for pickups
+  - Color coding helps identify which resource they restore

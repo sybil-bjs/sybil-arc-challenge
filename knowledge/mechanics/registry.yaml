@@ -1,0 +1,43 @@
+# Mechanics Registry Index
+# Auto-loaded by SemanticDiscovery
+# Add new mechanics here as they're discovered
+
+version: 1
+last_updated: 2026-02-28
+total_mechanics: 5
+
+mechanics:
+  - name: transformation_point
+    file: transformation_point.yaml
+    priority: high  # Check early - critical for planning
+    games_seen: [ls20]
+    
+  - name: resource_pickup
+    file: resource_pickup.yaml
+    priority: medium  # Check if move_budget exists
+    games_seen: [ls20]
+    
+  - name: state_indicator
+    file: state_indicator.yaml
+    priority: high  # Always check - key for win condition
+    games_seen: [ls20]
+    
+  - name: goal_pattern
+    file: goal_pattern.yaml
+    priority: high  # Always check - defines objective
+    games_seen: [ls20]
+    
+  - name: move_budget
+    file: move_budget.yaml
+    priority: high  # Check early - affects planning
+    games_seen: [ls20]
+
+# Future mechanics to watch for:
+# - gravity (falling elements)
+# - push_pull (sokoban-style)
+# - color_cycling (rainbow transformations)
+# - teleporters (instant transport)
+# - keys_and_doors (unlock mechanics)
+# - multi_character (control switching)
+# - enemies (avoid or defeat)
+# - timers (real-time pressure)
