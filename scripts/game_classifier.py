@@ -140,6 +140,10 @@ class GameClassifier:
     def extract_visual_features(self, frame: np.ndarray) -> Dict[str, Any]:
         """Extract visual features from a game frame."""
         features = {}
+
+        # Ensure frame is 2D
+        if len(frame.shape) == 3:
+            frame = frame[0]
         
         # Color distribution
         unique_colors = np.unique(frame)
@@ -200,6 +204,10 @@ class GameClassifier:
     
     def _frame_to_ascii(self, frame: np.ndarray, max_size: int = 40) -> str:
         """Convert frame to ASCII representation for LLM."""
+        # Ensure frame is 2D
+        if len(frame.shape) == 3:
+            frame = frame[0]
+
         # Downsample if needed
         h, w = frame.shape
         if h > max_size or w > max_size:

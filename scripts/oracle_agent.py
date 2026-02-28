@@ -5,11 +5,12 @@ Combines world knowledge (LLM) with learned action prediction and adaptive learn
 Lead: Saber ⚔️ | ML Integration: Sybil 🧠
 
 Architecture:
-1. CLASSIFY: Identify game archetype (MAZE, SOKOBAN, etc.) via Sybil's AdaptiveClassifier.
-2. ENRICH: Load learned priors and successful strategies from previous sessions.
-3. PREDICT: Use action predictor to find productive actions (causes frame changes).
-4. EXECUTE: Apply archetype-specific strategies with hypothesis testing.
-5. RECORD: Feed learnings back into Sybil's Adaptive Learning System.
+1. HUMAN KNOWLEDGE: Check for human-provided strategies first (knowledge/human_strategies/)
+2. CLASSIFY: Identify game archetype (MAZE, SOKOBAN, etc.) via Sybil's AdaptiveClassifier.
+3. ENRICH: Load learned priors and successful strategies from previous sessions.
+4. PREDICT: Use action predictor to find productive actions (causes frame changes).
+5. EXECUTE: Apply archetype-specific strategies with hypothesis testing.
+6. RECORD: Feed learnings back into Sybil's Adaptive Learning System.
 """
 
 import os
@@ -19,6 +20,61 @@ import numpy as np
 import hashlib
 from collections import defaultdict
 from dataclasses import asdict
+import re
+
+# Human strategy loader
+KNOWLEDGE_DIR = Path(__file__).parent.parent / "knowledge" / "human_strategies"
+
+def load_human_strategy(game_id: str) -> dict:
+    """Load human-provided strategies for a game if available."""
+    # Try exact match first, then prefix match
+    game_base = game_id.split("-")[0]  # e.g., "ls20" from "ls20-cb3b57cc"
+    
+    for pattern in [f"{game_id}*.md", f"{game_base}*.md"]:
+        matches = list(KNOWLEDGE_DIR.glob(pattern)) if KNOWLEDGE_DIR.exists() else []
+        if matches:
+            with open(matches[0], "r") as f:
+                content = f.read()
+            
+            # Extract key mechanics
+            strategy = {
+                "has_human_knowledge": True,
+                "source": str(matches[0].name),
+                "elements": [],
+                "win_condition": None,
+                "priority_targets": [],
+                "constraints": [],
+            }
+            
+            # Parse elements table if present
+            if "| Element |" in content:
+                for line in content.split("\n"):
+                    if "|" in line and not line.startswith("|--") and "Element" not in line:
+                        parts = [p.strip() for p in line.split("|") if p.strip()]
+                        if len(parts) >= 2:
+                            strategy["elements"].append({"name": parts[0], "function": parts[-1]})
+            
+            # Extract priority targets
+            if "plus sign" in content.lower() or "plus button" in content.lower():
+                strategy["priority_targets"].append("plus_sign")
+            if "rainbow" in content.lower():
+                strategy["priority_targets"].append("rainbow_block")
+            if "yellow" in content.lower() and "pickup" in content.lower():
+                strategy["priority_targets"].append("yellow_pickup")
+            
+            # Extract constraints
+            if "single-use" in content.lower():
+                strategy["constraints"].append("plus_button_single_use")
+            if "move budget" in content.lower() or "life bar" in content.lower():
+                strategy["constraints"].append("limited_moves")
+            
+            # Win condition
+            if "combine" in content.lower():
+                strategy["win_condition"] = "combine_matching_patterns"
+            
+            return strategy
+    
+    return {"has_human_knowledge": False}
 
 # Add scripts directory to path for imports
 sys.path.append(os.path.dirname(__file__))
@@ -66,6 +122,7 @@ class OracleAgent:
         # Session State
         self.game_id = None
         self.classification = None
+        self.human_strategy = None  # NEW: Human-provided knowledge
         self.actions_taken = 0
         self.levels_completed = 0
         self.total_actions = 0
@@ -75,7 +132,7 @@ class OracleAgent:
         self.last_action = None
         self.visited_states = set()
         
-        # Learing Stats for record_learning
+        # Learning Stats for record_learning
         self.successful_strategies = []
         self.failed_strategies = []
         self.discovered_mechanics = []
@@ -88,6 +145,15 @@ class OracleAgent:
         # Identify Game ID if not set
         if self.game_id is None:
             self.game_id = getattr(frame_data, 'game_id', 'unknown')
+
+        # 0. HUMAN KNOWLEDGE (highest priority!)
+        if self.human_strategy is None:
+            self.human_strategy = load_human_strategy(self.game_id)
+            if self.human_strategy.get("has_human_knowledge"):
+                print(f"  📚 HUMAN KNOWLEDGE LOADED: {self.human_strategy['source']}")
+                print(f"     Priority targets: {self.human_strategy['priority_targets']}")
+                print(f"     Constraints: {self.human_strategy['constraints']}")
+                print(f"     Win condition: {self.human_strategy['win_condition']}")
 
         # 1. CLASSIFY (or retrieve from memory)
         if self.classification is None:
@@ -113,8 +179,9 @@ class OracleAgent:
                 self.failed_strategies.append(f"no_op_{self.last_action.value}_at_{self.last_state_hash}")
             else:
                 # Discovered a mechanic: action X changes Y pixels
-                pixels_changed = np.sum(frame != self.last_frame) if hasattr(self, 'last_frame') else 0
-                self.discovered_mechanics.append(f"action_{self.last_action.value}_changes_{pixels_changed}_px")
+                if hasattr(self, 'last_frame') and frame is not None and self.last_frame is not None and frame.shape == self.last_frame.shape:
+                    pixels_changed = np.sum(frame != self.last_frame)
+                    self.discovered_mechanics.append(f"action_{self.last_action.value}_changes_{pixels_changed}_px")
 
         self.visited_states.add(current_hash)
         self.last_frame = frame
