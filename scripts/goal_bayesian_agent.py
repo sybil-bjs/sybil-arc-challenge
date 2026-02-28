@@ -46,14 +46,26 @@ except ImportError:
 # ============================================================================
 
 class GoalType(Enum):
-    """Possible high-level goals a human might have."""
+    """
+    Possible high-level goals a human might have.
+    
+    KEY INSIGHT (Bridget): Goals are RELATIONAL, not positional.
+    Not "go to (x,y)" but "overlap with the thing that matches me."
+    """
+    # Relational goals (preferred)
+    TRANSFORM_TO_MATCH = "transform_to_match"      # Become something that can combine
+    OVERLAP_WITH_MATCH = "overlap_with_match"      # Find my match, converge with it
+    COLLECT_RESOURCE = "collect_resource"          # Pick up items (color-coded)
+    
+    # Positional goals (fallback when relations unknown)
     REACH_ACTION_POINT = "reach_action_point"      # Go to plus sign, button, etc.
-    COLLECT_RESOURCE = "collect_resource"          # Pick up items (yellow boxes)
-    TRANSFORM = "transform"                        # Change shape/color
-    COMBINE = "combine"                            # Merge matching elements
     EXPLORE_REGION = "explore_region"              # Directed exploration of area
     AVOID_HAZARD = "avoid_hazard"                  # Don't step on X
     UNKNOWN = "unknown"                            # Fallback
+    
+    # Legacy alias
+    TRANSFORM = "transform"
+    COMBINE = "combine"
 
 
 @dataclass
@@ -80,6 +92,70 @@ class GoalTransition:
     to_goal: str
     trigger: str          # What caused the transition
     success_count: int = 1
+
+
+# ============================================================================
+# GENERALIZABLE HUMAN INTUITION
+# ============================================================================
+# These are ABSTRACT patterns that transfer across games.
+# Not "ls20 has cyan plus" but "action points tend to look like X"
+
+HUMAN_INTUITION_PATTERNS = {
+    # Visual → Meaning mappings (abstract, not game-specific)
+    "visual_patterns": {
+        "plus_cross_shape": {
+            "likely_meaning": "action_point",
+            "goal_type": "reach_action_point",
+            "confidence": 0.8,
+            "reasoning": "Plus/cross shapes universally indicate 'do something here'"
+        },
+        "depleting_bar": {
+            "likely_meaning": "resource_constraint",
+            "goal_type": "collect_resource",
+            "confidence": 0.85,
+            "reasoning": "Bars that shrink indicate limited budget - be efficient"
+        },
+        "color_matching": {
+            "likely_meaning": "relationship_indicator",
+            "goal_type": "collect_resource",
+            "confidence": 0.75,
+            "reasoning": "Same color often means 'these things go together'"
+        },
+        "rainbow_multicolor": {
+            "likely_meaning": "transformation_point",
+            "goal_type": "transform_to_match",
+            "confidence": 0.7,
+            "reasoning": "Rainbow/multicolor suggests changing properties"
+        },
+        "matching_patterns": {
+            "likely_meaning": "combine_trigger",
+            "goal_type": "overlap_with_match",
+            "confidence": 0.9,
+            "reasoning": "When you see two things that match, bring them together"
+        },
+        "distinct_single_element": {
+            "likely_meaning": "player_avatar",
+            "goal_type": None,
+            "confidence": 0.7,
+            "reasoning": "A unique element is often what you control"
+        },
+    },
+    
+    # Game structure patterns (universal)
+    "structural_patterns": {
+        "progressive_complexity": "Each level adds ONE new concept",
+        "resource_before_action": "If path seems impossible, look for pickups first",
+        "transformation_before_combination": "Usually: change yourself, then merge",
+        "single_use_triggers": "Action points often can only be used once",
+    },
+    
+    # Goal sequence patterns (common flows)
+    "goal_sequences": [
+        ["collect_resource", "reach_action_point", "transform_to_match", "overlap_with_match"],
+        ["reach_action_point", "transform_to_match", "overlap_with_match"],
+        ["explore_region", "reach_action_point", "transform_to_match"],
+    ],
+}
     
 
 # ============================================================================
