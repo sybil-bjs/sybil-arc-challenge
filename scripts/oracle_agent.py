@@ -209,8 +209,34 @@ class OracleAgent:
         return action
 
     def _explore(self, state_hash: str, valid_actions: list) -> GameAction:
-        """Systematic exploration using priors + change prediction."""
-        # Sybil's suggested actions have priority
+        """Goal-directed exploration using human priors + Bayesian updates."""
+        
+        # HUMAN GOAL PRIORS (highest priority)
+        # If we have human knowledge, use it to direct exploration
+        if self.human_strategy and self.human_strategy.get("has_human_knowledge"):
+            priority_targets = self.human_strategy.get("priority_targets", [])
+            
+            # Goal-directed action selection based on human priors
+            # "What would a human try to do here?"
+            if "plus_sign" in priority_targets:
+                # Human goal: reach the action point
+                # Directional actions (1-4) are likely movement
+                movement_actions = [a for a in valid_actions if a.value in [1, 2, 3, 4]]
+                if movement_actions:
+                    # Try untested movements first (exploring toward goal)
+                    for action in movement_actions:
+                        if self.action_predictor.stats[(state_hash, action.value)]["attempts"] == 0:
+                            return action
+                    # If all tested, use highest change probability
+                    return max(movement_actions, 
+                              key=lambda a: self.action_predictor.predict_change_prob(state_hash, a.value))
+            
+            if "yellow_pickup" in priority_targets:
+                # Human goal: collect resources when low
+                # Could trigger different behavior based on observed life bar
+                pass  # TODO: visual life bar detection
+        
+        # Sybil's classifier suggestions (next priority)
         suggestions = [int_to_action(int(a)) for a in self.classification.suggested_first_actions if str(a).isdigit()]
         
         # Try suggestions first
