@@ -409,6 +409,10 @@ class GoalBayesianAgent:
         self.last_frame: Optional[np.ndarray] = None
         self.last_frame_hash: Optional[str] = None
         self.frame_history: List[str] = []
+        
+        # Transformation tracking
+        self.transformation_detected: bool = False
+        self.transformation_count: int = 0
     
     def _hash_frame(self, frame: np.ndarray) -> str:
         """Hash a frame for comparison."""
@@ -484,18 +488,57 @@ class GoalBayesianAgent:
         new_goal = self.current_goal.goal_type
         
         if old_goal != new_goal:
-            print(f"     🔄 Goal shift: {old_goal.value} → {new_goal.value} (p={self.current_goal.posterior:.2f})")
+            # Determine trigger type
+            if level_changed:
+                trigger = "level_win"
+                emoji = "🎉"
+            elif getattr(self, 'transformation_detected', False) and self.transformation_count == 1:
+                trigger = "transformation"
+                emoji = "🔮"
+            elif frame_changed:
+                trigger = "frame_change"
+                emoji = "🔄"
+            else:
+                trigger = "inference"
+                emoji = "🔄"
+            
+            print(f"     {emoji} Goal shift: {old_goal.value} → {new_goal.value} (p={self.current_goal.posterior:.2f}) [{trigger}]")
             self.goal_history.append(new_goal.value)
             
             # Record transition to database
             if old_goal:
-                trigger = "level_win" if level_changed else ("frame_change" if frame_changed else "inference")
                 self.db.record_transition(self.game_id, old_goal.value, new_goal.value, trigger)
         
         # Update frame tracking
         self.last_frame = new_frame
         self.last_frame_hash = new_hash
         self.frame_history.append(new_hash)
+    
+    def _compute_frame_change_magnitude(self, old_frame: np.ndarray, new_frame: np.ndarray) -> float:
+        """Compute how dramatically the frame changed (0.0 to 1.0)."""
+        if old_frame is None or new_frame is None:
+            return 0.0
+        if old_frame.size == 0 or new_frame.size == 0:
+            return 0.0
+        if old_frame.shape != new_frame.shape:
+            return 0.5  # Different shapes = significant but not full change
+        
+        total_pixels = old_frame.size
+        if total_pixels == 0:
+            return 0.0
+        changed_pixels = np.sum(old_frame != new_frame)
+        return changed_pixels / total_pixels
+    
+    def _detect_transformation(self, change_magnitude: float) -> bool:
+        """
+        Detect if a transformation event occurred.
+        
+        Transformation = dramatic visual change (not just movement).
+        Movement typically changes <5% of pixels.
+        Transformation changes 15-50% of pixels.
+        100% change = probably frame reset/error, not real transformation.
+        """
+        return 0.15 < change_magnitude < 0.80
     
     def _compute_likelihood(self, goal_type: GoalType, action: int, 
                            frame_changed: bool, level_changed: bool,
@@ -504,24 +547,52 @@ class GoalBayesianAgent:
         Compute P(observation | goal).
         
         How likely is this observation if we're pursuing this goal?
+        
+        KEY: Detect transformation events (dramatic frame changes) to
+        trigger goal shifts from reach_action_point → transform_to_match → overlap_with_match
         """
         
+        # Calculate change magnitude
+        change_magnitude = self._compute_frame_change_magnitude(self.last_frame, frame)
+        is_transformation = self._detect_transformation(change_magnitude)
+        
+        if is_transformation:
+            self.transformation_count += 1
+            print(f"     🔮 TRANSFORMATION #{self.transformation_count} DETECTED! ({change_magnitude*100:.1f}% pixels changed)")
+            self.transformation_detected = True
+        
         if level_changed:
-            # Level completion strongly supports COMBINE goal
-            if goal_type == GoalType.COMBINE:
-                return 5.0  # Strong evidence
+            # Level completion strongly supports OVERLAP_WITH_MATCH / COMBINE
+            if goal_type in [GoalType.COMBINE, GoalType.OVERLAP_WITH_MATCH]:
+                return 10.0  # Very strong evidence
             else:
-                return 0.5  # Weak counter-evidence
+                return 0.3  # Counter-evidence
+        
+        if is_transformation:
+            # Dramatic change = transformation event
+            # Strong evidence for TRANSFORM goals, triggers shift to OVERLAP
+            if goal_type in [GoalType.TRANSFORM, GoalType.TRANSFORM_TO_MATCH]:
+                return 8.0  # We just transformed!
+            elif goal_type == GoalType.REACH_ACTION_POINT:
+                return 0.5  # We were reaching, now we should shift
+            elif goal_type in [GoalType.OVERLAP_WITH_MATCH, GoalType.COMBINE]:
+                return 3.0  # Post-transformation, combining becomes likely
+            else:
+                return 0.8
         
         if frame_changed:
-            # Frame change is good evidence for most active goals
+            # Normal movement (small change)
             if goal_type == GoalType.REACH_ACTION_POINT:
                 return 1.5  # Moving toward something
-            elif goal_type == GoalType.TRANSFORM:
-                # Big frame change might indicate transformation
-                return 1.3
+            elif goal_type in [GoalType.TRANSFORM, GoalType.TRANSFORM_TO_MATCH]:
+                return 1.1  # Might be approaching transform point
             elif goal_type == GoalType.COLLECT_RESOURCE:
                 return 1.4
+            elif goal_type in [GoalType.OVERLAP_WITH_MATCH, GoalType.COMBINE]:
+                # If we've already transformed, movement toward match is good
+                if getattr(self, 'transformation_detected', False):
+                    return 2.0  # Moving toward our match!
+                return 1.2
             elif goal_type == GoalType.EXPLORE_REGION:
                 return 1.2
             else:
