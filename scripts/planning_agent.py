@@ -199,6 +199,9 @@ class PlanningAgent:
     def analyze_and_plan(self, frame: np.ndarray) -> Optional[GamePlan]:
         """
         Analyze the frame and create a complete plan.
+        
+        KEY INSIGHT (Bridget 2026-02-28): Check if state ALREADY matches goal!
+        If so, skip plus sign entirely — just navigate to goal.
         """
         # Get detections
         detections = self.pipeline.process_frame(frame)
@@ -208,36 +211,58 @@ class PlanningAgent:
         goal = detections.get('goal')
         state = detections.get('state')
         
-        if not all([player and player.found, 
-                    plus_sign and plus_sign.found,
-                    goal and goal.found]):
-            print("  ❌ Cannot build plan - missing detections")
+        # Minimum requirements: player and goal
+        if not (player and player.found and goal and goal.found):
+            print("  ❌ Cannot build plan - missing player or goal")
             print(f"     Player: {player.found if player else False}")
-            print(f"     Plus: {plus_sign.found if plus_sign else False}")
             print(f"     Goal: {goal.found if goal else False}")
             return None
         
         # Extract positions
         player_pos = Position(int(player.position[0]), int(player.position[1]))
-        plus_pos = Position(int(plus_sign.position[0]), int(plus_sign.position[1]))
         goal_pos = Position(int(goal.position[0]), int(goal.position[1]))
+        plus_pos = Position(int(plus_sign.position[0]), int(plus_sign.position[1])) if plus_sign and plus_sign.found else None
         
         print(f"  📍 Positions:")
         print(f"     Player: ({player_pos.x}, {player_pos.y})")
-        print(f"     Plus:   ({plus_pos.x}, {plus_pos.y})")
         print(f"     Goal:   ({goal_pos.x}, {goal_pos.y})")
+        if plus_pos:
+            print(f"     Plus:   ({plus_pos.x}, {plus_pos.y})")
         
         # Build spatial map
         spatial_map = SpatialMap(frame)
         pathfinder = Pathfinder(spatial_map)
         
+        # KEY CHECK: Does state already match goal?
+        hover_count = self._estimate_transformations(state, goal)
+        state_matches_goal = (hover_count == 0)
+        print(f"  🔍 State vs Goal: {'MATCH! ✅' if state_matches_goal else f'{hover_count} transformations needed'}")
+        
+        if state_matches_goal:
+            # Skip plus sign — go directly to goal!
+            print("  ⚡ STATE MATCHES GOAL — skipping plus sign!")
+            path_to_goal = pathfinder.find_path(player_pos, goal_pos)
+            print(f"  🗺️ Direct path to goal: {len(path_to_goal)} actions")
+            
+            return GamePlan(
+                player_start=player_pos,
+                plus_position=plus_pos or Position(0, 0),  # Unused but required
+                goal_position=goal_pos,
+                path_to_plus=[],  # Empty — skip plus sign
+                hover_count=0,
+                path_to_goal=path_to_goal,
+                total_actions=len(path_to_goal)
+            )
+        
+        # Need transformation — require plus sign
+        if not plus_pos:
+            print("  ❌ Need transformation but no plus sign found!")
+            return None
+        
         # Plan path to plus sign
         path_to_plus = pathfinder.find_path(player_pos, plus_pos)
         print(f"  🗺️ Path to plus: {len(path_to_plus)} actions")
-        
-        # Estimate hover count (compare state vs goal patterns)
-        hover_count = self._estimate_transformations(state, goal)
-        print(f"  🔄 Estimated transformations needed: {hover_count}")
+        print(f"  🔄 Transformations needed: {hover_count}")
         
         # Plan path from plus to goal
         path_to_goal = pathfinder.find_path(plus_pos, goal_pos)
@@ -257,7 +282,11 @@ class PlanningAgent:
         )
     
     def _estimate_transformations(self, state_det, goal_det) -> int:
-        """Estimate how many transformations needed to match goal."""
+        """
+        Estimate how many transformations needed to match goal.
+        
+        Returns 0 if patterns already match (critical for skip-plus optimization).
+        """
         if not state_det or not goal_det:
             return 5  # Default guess
         
@@ -278,9 +307,13 @@ class PlanningAgent:
         # Count differences
         diff_ratio = np.mean(state_crop != goal_crop)
         
+        # KEY: Return 0 if patterns match (or nearly match)
+        if diff_ratio < 0.1:  # Less than 10% different = match
+            return 0
+        
         # Estimate: each transformation changes ~20% of pattern
-        estimated = max(1, int(diff_ratio / 0.2))
-        return min(estimated, 10)  # Cap at 10
+        estimated = int(diff_ratio / 0.2)
+        return min(max(1, estimated), 10)  # Between 1 and 10
     
     def get_action(self, frame: np.ndarray) -> Tuple[int, str]:
         """
@@ -305,7 +338,12 @@ class PlanningAgent:
         
         # Execute plan phases
         if self.phase == "executing_path_to_plus":
-            if self.plan_index < len(self.plan.path_to_plus):
+            # Check if we should skip plus sign (state already matches goal)
+            if len(self.plan.path_to_plus) == 0:
+                print("  ⚡ Skipping plus phase — going directly to goal!")
+                self.phase = "executing_path_to_goal"
+                self.plan_index = 0
+            elif self.plan_index < len(self.plan.path_to_plus):
                 action = self.plan.path_to_plus[self.plan_index]
                 self.plan_index += 1
                 self.actions_taken += 1
@@ -317,7 +355,11 @@ class PlanningAgent:
                 self.hover_count = 0
         
         if self.phase == "hovering":
-            if self.hover_count < self.plan.hover_count:
+            # Skip if no hover needed
+            if self.plan.hover_count == 0:
+                self.phase = "executing_path_to_goal"
+                self.plan_index = 0
+            elif self.hover_count < self.plan.hover_count:
                 self.hover_count += 1
                 self.actions_taken += 1
                 # Small movements to trigger transformation

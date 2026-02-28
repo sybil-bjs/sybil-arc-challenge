@@ -217,3 +217,61 @@ For automated detection:
 - **Goal pattern:** Dark square region, extract pattern
 - **State indicator:** Bottom-left HUD, extract current pattern  
 - **Player:** Orange+blue composite block (unique)
+
+---
+
+## ANNOTATED SCREENSHOT ANALYSIS (Bridget, 2026-02-28 13:48 EST)
+
+### Level 2 / 7 — Verified Element Positions
+
+| Element | Description | Detection Notes |
+|---------|-------------|-----------------|
+| **Power up token** | Yellow box with black center | Top-left area of playable field |
+| **Goal** | Blue L-shape in black-bordered box | "Place to put your final token" |
+| **Player token** | Orange top + Blue bottom composite | Movable via arrow keys |
+| **Plus Sign** | Small white cross | Right side of field |
+| **Player state** | Blue L-shape indicator | Bottom-left corner HUD |
+| **Yellow bar** | Move budget | Bottom of screen |
+| **Red indicators** | End of bar | Danger zone / penalty |
+
+### WIN CONDITION (Confirmed)
+
+```
+IF state_indicator MATCHES goal_pattern:
+    → Navigate player to goal box
+    → Overlap triggers WIN
+ELSE:
+    → Navigate to plus sign
+    → Transform state
+    → Check again
+```
+
+### KEY OPTIMIZATION
+
+In the screenshot, state indicator (blue L) **already matches** goal (blue L).
+Agent should CHECK FOR MATCH FIRST before assuming transformation is needed!
+
+### Controls Confirmed
+- Arrow keys: Movement
+- Space bar: Action?
+- Click: Point interaction
+- Undo (Z): Undo last action
+- RESET LEVEL: Full restart
+
+### Agent Logic Update
+
+```python
+def plan_level(frame):
+    state = detect_state_indicator(frame)
+    goal = detect_goal_pattern(frame)
+    
+    if patterns_match(state, goal):
+        # Skip plus sign entirely!
+        return plan_path_to_goal()
+    else:
+        return plan_path_to_plus() + transform() + plan_path_to_goal()
+```
+
+---
+
+*Visual ground truth from human annotation. Highest confidence.*
