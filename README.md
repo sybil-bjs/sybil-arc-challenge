@@ -1,29 +1,64 @@
-# Sybil-ARC: Saturating ARC-AGI-2 with Integrated Agentic Intelligence
+# ARC-AGI-3 Challenge - BJS Labs
 
-## Overview
-This repository documents a state-of-the-art attempt to solve the [ARC-AGI-2](https://arcprize.org/) benchmark using a unique **Human-Agent Collaboration** model. 
-
-While most solvers rely on stateless pipelines, **Sybil-ARC** leverages the **VULKN Architecture**: a persistent AI agent (Sybil) with direct access to a local Mac environment ("Mac Tools"), allowing for real-time code execution, visual verification, and cumulative learning.
-
-**Principal Investigator:** Bridget (@bridget4g)
-**Lead Researcher:** Sybil (Autonomous Agent via OpenClaw)
-
-## The "Mac Tools" Advantage
-Unlike standard LLM entries, Sybil utilizes a "System 2" thinking approach:
-1. **Visual Discovery:** Using LVM capabilities to identify high-level strategies (symmetry, gravity, tiling).
-2. **Technical Execution:** Writing bespoke Python scripts to verify the logic against training data.
-3. **Iterative Refinement:** Self-correcting logic based on execution errors until 100% accuracy is achieved on training pairs.
-4. **Logic Primitives:** Building a library of reusable geometric and logical functions (the "Hive Mind Library").
-
-## Repository Structure
-- `scripts/`: The orchestrator and sub-agent spawning logic.
-- `primitives/`: A growing library of verified ARC logic functions.
-- `logs/`: Full conversation and execution logs showing the "Thinking Process."
-- `results/`: Live leaderboard and verified solutions for the 400-task evaluation set.
-
-## Progress
-- **Current Score:** [Calculating...]
-- **Strategy:** Integrated Intelligence (Vision + Code + Persistence)
+**Goal:** Build a winning agent for the ARC-AGI-3 Interactive Reasoning Benchmark  
+**Launch Date:** March 25, 2026  
+**Team:** Sybil (ML/Research) + Saber (Sales/Marketing)
 
 ---
-*This repository is maintained by Sybil under the direction of Bridget. Our goal is to prove that agents with "hands" and "memory" are the key to AGI.*
+
+## Project Structure
+
+```
+├── saber-prototypes/     # Saber's prototype agents
+│   ├── README.md         # Research findings & approach details
+│   ├── action_predictor_agent.py   # Action change prediction (closest to winner)
+│   ├── world_model_agent.py        # Curiosity via prediction error
+│   ├── goal_inference_agent.py     # Credit assignment + planning
+│   ├── llm_hybrid_agent.py         # Rule hypothesis testing
+│   ├── benchmark.py                # Multi-agent comparison
+│   └── diagnose_game.py            # Game mechanics analysis
+│
+├── sybil-approach/       # Sybil's approach (TBD)
+│
+└── combined/             # Best ideas from both (TBD)
+```
+
+---
+
+## Quick Start
+
+```bash
+# Install toolkit
+pip install arc-agi
+
+# Run diagnostics
+python saber-prototypes/diagnose_game.py ls20
+
+# Run benchmark
+python saber-prototypes/benchmark.py quick ls20 1000
+```
+
+---
+
+## Key Findings (Saber)
+
+### Game Mechanics
+- **97-99% of random actions do nothing** — extremely sparse dynamics
+- Games require learning which (state, action) pairs cause transitions
+- Winning approach (StochasticGoose) used CNN to predict action effects
+
+### Prototype Approaches
+1. **World Model + Curiosity** — explore where predictions fail
+2. **Goal Inference** — credit assignment when levels complete
+3. **LLM Hybrid** — generate rule hypotheses, test them
+4. **Action Predictor** — learn which actions cause changes
+
+See `saber-prototypes/README.md` for detailed analysis.
+
+---
+
+## Collaboration
+
+- Compare approaches from both contributors
+- Combine best ideas
+- Iterate toward winning submission
