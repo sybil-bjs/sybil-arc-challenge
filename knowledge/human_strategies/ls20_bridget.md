@@ -62,3 +62,50 @@
 
 *This is human-transferred knowledge, not learned from exploration.*
 *Confidence: Maximum (direct human instruction)*
+
+---
+
+## Level 2+ Mechanics (Additional Human Insights)
+
+### Yellow Boxes = Life/Move Pickups
+
+**Observation:** Small yellow boxes appear on the field
+
+**Human Reasoning Chain:**
+1. **Color matching:** Yellow boxes match yellow life bar → probably related
+2. **Resource calculation:** "I don't have enough moves to reach plus sign AND return to target"
+3. **Game design logic:** "The puzzle must be solvable → there must be extra resources"
+4. **Hypothesis:** Yellow boxes = life/move pickups
+5. **Verification:** Step on yellow box → life bar increases ✅
+
+### Key Insight: Forward Resource Planning
+
+> "When I try completing without extra life, I realize I don't have enough. So there MUST be another resource given to me."
+
+This is **constraint-based reasoning:**
+- Observe: Not enough moves for the obvious path
+- Deduce: Designer must have provided a solution
+- Search: Look for resource pickups (color-coded yellow)
+- Execute: Collect pickups, then complete puzzle
+
+### Updated Strategy for Later Levels
+
+```
+1. Assess move budget vs required distance
+2. If insufficient → look for yellow pickups
+3. Plan route: pickups → plus sign → combine
+4. Execute efficiently
+```
+
+### Mechanics Summary
+
+| Element | Color | Function |
+|---------|-------|----------|
+| Life bar | Yellow | Current move budget |
+| Pickups | Yellow | +moves when collected |
+| Plus sign | ? | Transforms pattern |
+| Target box | ? | Combine with transformed box to win |
+
+---
+
+*Human knowledge continues to accumulate. Each level teaches more.*
