@@ -77,9 +77,19 @@ class SpatialMap:
         self.walkable = self._build_walkability_map()
     
     def _build_walkability_map(self) -> np.ndarray:
-        """Determine which cells are walkable."""
-        # Common background/path colors in ls20
-        walkable_colors = {3, 4, 5}
+        """
+        Determine which cells are walkable.
+        
+        Sybil's grid semantics (2026-02-28):
+        - Floor = 3 (walkable)
+        - Walls = 4 (blocks!)
+        - Player = 9 + 12
+        - Plus sign = 1
+        - Goal = 8
+        """
+        # Floor is value 3 - this is the walkable path
+        # Also allow walking on plus sign (1), goal (8), and player positions (9, 12)
+        walkable_colors = {3, 1, 8, 9, 12}
         
         walkable = np.zeros_like(self.frame, dtype=bool)
         for color in walkable_colors:
@@ -93,8 +103,13 @@ class SpatialMap:
             return False
         return self.walkable[pos.y, pos.x]
     
-    def get_neighbors(self, pos: Position) -> List[Tuple[Position, int]]:
-        """Get walkable neighbors with the action to reach them."""
+    def get_neighbors(self, pos: Position, movement_distance: int = 5) -> List[Tuple[Position, int]]:
+        """
+        Get reachable neighbors with the action to reach them.
+        
+        Sybil's insight: Player moves 5 CELLS per action, not 1!
+        We simulate movement by checking if the path is clear.
+        """
         # Actions: 1=up, 2=down, 3=left, 4=right
         directions = [
             (0, -1, 1),  # up
@@ -105,9 +120,18 @@ class SpatialMap:
         
         neighbors = []
         for dx, dy, action in directions:
-            new_pos = Position(pos.x + dx, pos.y + dy)
-            if self.is_walkable(new_pos):
-                neighbors.append((new_pos, action))
+            # Move up to 5 cells in this direction (or until blocked)
+            final_pos = pos
+            for step in range(1, movement_distance + 1):
+                test_pos = Position(pos.x + dx * step, pos.y + dy * step)
+                if self.is_walkable(test_pos):
+                    final_pos = test_pos
+                else:
+                    break  # Hit a wall, stop here
+            
+            # Only add if we actually moved somewhere
+            if final_pos != pos:
+                neighbors.append((final_pos, action))
         
         return neighbors
 
