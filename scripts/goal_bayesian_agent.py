@@ -26,6 +26,14 @@ import hashlib
 
 sys.path.append(os.path.dirname(__file__))
 
+# Import visual detector for directed navigation
+try:
+    from scripts.visual_detector import VisualDetector, DirectedNavigator, ElementType
+    HAS_VISUAL = True
+except ImportError:
+    HAS_VISUAL = False
+    DirectedNavigator = None
+
 # Try to import ARC-AGI, but allow standalone testing
 try:
     import arc_agi
@@ -392,7 +400,7 @@ class GoalBayesianAgent:
     goal we should be pursuing.
     """
     
-    def __init__(self):
+    def __init__(self, use_visual_navigation: bool = True):
         self.db = GoalLearningDB()
         
         # Current belief state
@@ -413,6 +421,10 @@ class GoalBayesianAgent:
         # Transformation tracking
         self.transformation_detected: bool = False
         self.transformation_count: int = 0
+        
+        # Visual navigation (directed movement instead of random)
+        self.use_visual_navigation = use_visual_navigation and HAS_VISUAL
+        self.navigator = DirectedNavigator() if self.use_visual_navigation else None
     
     def _hash_frame(self, frame: np.ndarray) -> str:
         """Hash a frame for comparison."""
@@ -655,22 +667,35 @@ class GoalBayesianAgent:
         else:
             GA = GameAction
         
-        # Goal-specific action selection
+        # USE VISUAL NAVIGATION if available (directed movement!)
+        if self.use_visual_navigation and self.navigator:
+            analysis = self.navigator.analyze_frame(frame)
+            recommended = analysis.get("recommended_action")
+            
+            if recommended is not None and recommended > 0:
+                # Map recommended action (1-4) to GameAction
+                action_map = {1: GA.ACTION1, 2: GA.ACTION2, 3: GA.ACTION3, 4: GA.ACTION4}
+                if recommended in action_map:
+                    target_action = action_map[recommended]
+                    if target_action in valid_actions:
+                        # Log visual guidance
+                        phase = analysis.get("current_phase", "unknown")
+                        if self.actions_taken % 50 == 0:  # Log every 50 actions
+                            print(f"     👁️ Visual: phase={phase}, action={recommended}")
+                        return target_action
+        
+        # Fallback to goal-specific heuristics
         if goal == GoalType.REACH_ACTION_POINT:
-            # Prioritize directional movement (actions 1-4 are usually directions)
             movement = [a for a in valid_actions if hasattr(a, 'value') and a.value in [1, 2, 3, 4]]
             if movement:
-                # Could add frame analysis here to detect direction of plus sign
                 return np.random.choice(movement)
         
         elif goal == GoalType.COLLECT_RESOURCE:
-            # Similar to reach, but might prefer different directions based on yellow detection
             movement = [a for a in valid_actions if hasattr(a, 'value') and a.value in [1, 2, 3, 4]]
             if movement:
                 return np.random.choice(movement)
         
-        elif goal == GoalType.TRANSFORM:
-            # We're on or near the transformation point, try action 5 or special actions
+        elif goal in [GoalType.TRANSFORM, GoalType.TRANSFORM_TO_MATCH]:
             special = [a for a in valid_actions if hasattr(a, 'value') and a.value >= 5]
             if special:
                 return special[0]
@@ -678,8 +703,7 @@ class GoalBayesianAgent:
             if movement:
                 return np.random.choice(movement)
         
-        elif goal == GoalType.COMBINE:
-            # Move toward target, directional movement
+        elif goal in [GoalType.COMBINE, GoalType.OVERLAP_WITH_MATCH]:
             movement = [a for a in valid_actions if hasattr(a, 'value') and a.value in [1, 2, 3, 4]]
             if movement:
                 return np.random.choice(movement)
