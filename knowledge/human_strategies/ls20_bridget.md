@@ -174,3 +174,46 @@ The game teaches mechanics progressively:
 **Human learning pattern:** Each level adds ONE new concept. Build on prior knowledge.
 
 *This mirrors how humans learn — scaffolded complexity.*
+
+---
+
+## GROUNDED VISUAL ELEMENTS (Sybil + Bridget, 2026-02-28)
+
+### Visual Element Identification
+
+| Element | Visual Description | Location |
+|---------|-------------------|----------|
+| Player token | Composite block (orange top + blue bottom) | Movable on grid |
+| State indicator | Shows current player form | Bottom-left HUD |
+| Goal pattern | Pattern in dark square | Static on grid |
+| Plus sign | **WHITE CROSS** | Transformation trigger |
+| Power-ups | Yellow squares with dark centers | Collectible |
+
+### CRITICAL MECHANIC CORRECTION
+
+**Plus sign is MULTI-USE, not single-use!**
+
+- Each hover over plus sign = 1 appearance change
+- Keep hovering until state indicator MATCHES goal pattern
+- THEN navigate to overlap goal
+
+### Optimal Algorithm
+
+```
+1. Detect goal pattern (dark square area)
+2. Detect current state (bottom-left HUD)
+3. Calculate: N = transformations_needed(state, goal)
+4. Navigate to plus sign (white cross)
+5. Hover N times (each hover = 1 transformation)
+6. Verify: state == goal
+7. Navigate to goal, overlap
+8. WIN
+```
+
+### Visual Detection Targets
+
+For automated detection:
+- **Plus sign:** Scan for white pixels in + shape
+- **Goal pattern:** Dark square region, extract pattern
+- **State indicator:** Bottom-left HUD, extract current pattern  
+- **Player:** Orange+blue composite block (unique)
