@@ -135,13 +135,27 @@ class VisualPipeline:
         """
         Detect plus sign - the transformation trigger.
         
-        Strategy: Look for rare colors that might be distinctive markers.
-        In ls20, the plus sign is color value 1 (rare, distinct).
-        Also look for cross/plus shaped patterns.
+        GROUNDED KNOWLEDGE: In ls20, plus sign is color value 1 (very rare).
+        This was discovered through frame analysis with Bridget.
         """
         h, w = frame.shape
         
-        # Find rare colors (< 2% of frame) - likely to be special markers
+        # PRIORITY: Look for value 1 pixels (the actual plus sign in ls20)
+        value_1_coords = np.argwhere(frame == 1)
+        
+        if len(value_1_coords) > 0:
+            # Found value 1 pixels - this is the plus sign
+            y_center = int(value_1_coords[:, 0].mean())
+            x_center = int(value_1_coords[:, 1].mean())
+            
+            return Detection(
+                found=True,
+                position=(x_center, y_center),
+                bounds=(x_center - 2, y_center - 2, x_center + 2, y_center + 2),
+                confidence=1.0,  # High confidence - grounded knowledge
+            )
+        
+        # Fallback: Look for other rare colors
         unique, counts = np.unique(frame, return_counts=True)
         total_pixels = h * w
         
